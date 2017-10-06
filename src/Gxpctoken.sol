@@ -1,10 +1,43 @@
 pragma solidity ^0.4.17;
 
 import "ds-auth/auth.sol";
+import "ds-math/math.sol";
+import "ds-token/token.sol";
+
+contract SystemRules {
+
+    function canCashOut(address user);
+
+    function serviceFee() returns (uint128);
+}
 
 contract Gxpctoken is DSAuth, DSMath, DSToken {
 
+    ERC20 deposit;
+    DSToken appToken;
 
+    SystemRules rules;
+
+    function cashOut(uint128 wad) {
+        assert(rules.canCashOut(msg.sender));
+
+        // Basic idea here is that prize < wad
+        // with the contract keeping the difference as a fee.
+        // See DS-Math for wdiv docs.
+
+        uint prize = wdiv(wad, rules.serviceFee());
+
+        appToken.pull(msg.sender, wad);
+
+        // only this contract is authorized to burn tokens
+        appToken.burn(prize);
+
+        deposit.transfer(msg.sender, prize);
+    }
+
+    function newRules(SystemRules rules_) auth {
+        rules = rules_;
+    }
 
 }
 
