@@ -2,6 +2,7 @@ pragma solidity ^0.4.17;
 
 import "ds-auth/auth.sol";
 import "ds-math/math.sol";
+import "ds-note/note.sol";
 import "ds-token/token.sol";
 
 contract SystemRules {
@@ -11,7 +12,7 @@ contract SystemRules {
     function serviceFee() returns (uint128);
 }
 
-contract Gxpctoken is DSAuth, DSMath, DSToken {
+contract Gxpctoken is DSAuth, DSMath, DSNote {
 
     ERC20 deposit;
     DSToken appToken;
