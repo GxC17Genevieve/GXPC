@@ -2,35 +2,9 @@ pragma solidity ^0.4.17;
 
 import "ds-auth/auth.sol";
 
-contract Gxpctoken {
+contract Gxpctoken is DSAuth, DSMath, DSToken {
 
-    event Transfer( address indexed from, address indexed to, uint value);
 
-    mapping( address => uint ) _balances;
-    uint _supply;
-
-    function DSTokenBase( uint initial_balance ) {
-        _balances[msg.sender] = initial_balance;
-        _supply = initial_balance;
-    }
-
-    function balanceOf( address who ) constant returns (uint value) {
-        return _balances[who];
-    }
-
-    function transfer( address to, uint value) returns (bool ok) {
-
-        if( _balances[msg.sender] < value ) {
-            throw;
-        }
-
-        _balances[msg.sender] -= value;
-        _balances[to] += value;
-
-        Transfer( msg.sender, to, value );
-
-        return true;
-    }
 
 }
 
