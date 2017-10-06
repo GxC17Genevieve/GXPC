@@ -7,9 +7,9 @@ import "ds-token/token.sol";
 
 contract SystemRules {
 
-    function canCashOut(address user);
+    function canCashOut(address user) returns(bool);
 
-    function serviceFee() returns (uint128);
+    function serviceFee() returns(uint128);
 }
 
 contract Gxpctoken is DSAuth, DSMath, DSNote {
