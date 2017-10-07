@@ -4,6 +4,7 @@ import "ds-auth/auth.sol";
 import "ds-math/math.sol";
 import "ds-note/note.sol";
 import "ds-token/token.sol";
+import "ds-vault/multivault.sol";
 
 contract SystemRules {
 
@@ -16,6 +17,7 @@ contract Gxpctoken is DSAuth, DSMath, DSNote {
 
     ERC20 deposit;
     DSToken appToken;
+    DSMultiVault multiVault;
 
     SystemRules rules;
 
