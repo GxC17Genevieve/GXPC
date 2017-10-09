@@ -4,6 +4,7 @@ import "ds-auth/auth.sol";
 import "ds-math/math.sol";
 import "ds-note/note.sol";
 import "ds-stop/stop.sol";
+import "ds-thing/thing.sol";
 import "ds-token/token.sol";
 import "ds-vault/multivault.sol";
 
@@ -14,7 +15,9 @@ contract SystemRules {
     function serviceFee() returns(uint128);
 }
 
-contract Gxpctoken is DSAuth, DSMath, DSNote, DSStop {
+//contract Gxpctoken is DSAuth, DSMath, DSNote, DSStop {
+//contract Gxpctoken is DSMath, DSNote, DSStop {
+contract Gxpctoken is DSThing, DSStop {
 
     ERC20        deposit;
     DSToken      appToken;
