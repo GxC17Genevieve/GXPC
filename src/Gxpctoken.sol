@@ -173,7 +173,8 @@ contract Crowdsale is DSMath, DSStop, PullPayment {
         uint GXPCToSend = (msg.value * multiplier) / tokenPriceWei ; // calculate number of tokens
 
         // Ensure that max cap hasn't been reached
-        if (safeAdd(GXPCSentToETH, GXPCToSend) > maxCap) revert();
+        //if (safeAdd(GXPCSentToETH, GXPCToSend) > maxCap) revert();
+        if (add(GXPCSentToETH, GXPCToSend) > maxCap) revert();
 
         Backer storage backer = backers[_backer];
 
@@ -181,10 +182,14 @@ contract Crowdsale is DSMath, DSStop, PullPayment {
              backersIndex.push(_backer);
 
         if (!gxpc.transfer(_backer, GXPCToSend)) revert(); // Transfer GXPC tokens
-        backer.GXPCSent = safeAdd(backer.GXPCSent, GXPCToSend);
-        backer.weiReceived = safeAdd(backer.weiReceived, msg.value);
-        ETHReceived = safeAdd(ETHReceived, msg.value); // Update the total Ether recived
-        GXPCSentToETH = safeAdd(GXPCSentToETH, GXPCToSend);
+        //backer.GXPCSent = safeAdd(backer.GXPCSent, GXPCToSend);
+        backer.GXPCSent = add(backer.GXPCSent, GXPCToSend);
+        //backer.weiReceived = safeAdd(backer.weiReceived, msg.value);
+        backer.weiReceived = add(backer.weiReceived, msg.value);
+        //ETHReceived = safeAdd(ETHReceived, msg.value); // Update the total Ether recived
+        ETHReceived = add(ETHReceived, msg.value); // Update the total Ether recived
+        //GXPCSentToETH = safeAdd(GXPCSentToETH, GXPCToSend);
+        GXPCSentToETH = add(GXPCSentToETH, GXPCToSend);
         ReceivedETH(_backer, msg.value, GXPCToSend); // Register event
         return true;
     }
@@ -203,7 +208,8 @@ contract Crowdsale is DSMath, DSStop, PullPayment {
                                                                                // finished as exact amount of maxCap might be not feasible e.g. you can't easily buy few tokens
                                                                                // when min contribution is 0.1 ETH
 
-        if (GXPCSentToETH < minCap && block.number < safeAdd(endBlock , daysToRefund)) revert();   
+        //if (GXPCSentToETH < minCap && block.number < safeAdd(endBlock , daysToRefund)) revert();   
+        if (GXPCSentToETH < minCap && block.number < add(endBlock , daysToRefund)) revert();   
 
         if (GXPCSentToETH > minCap) {
             if (!multisigETH.send(this.balance)) revert();  // transfer balance to multisig wallet
@@ -368,16 +374,22 @@ contract Gxpctoken is DSThing {
     }
 
     function burn( address _member, uint256 _value) onlyAuthorized returns(bool) {
-        balances[_member] = safeSub(balances[_member], _value);
-        totalSupply       = safeSub(totalSupply, _value);
-        Transfer(_member, 0x0, _value);
+        //balances[_member] = safeSub(balances[_member], _value);
+        balances[_member] = sub(balances[_member], _value);
+        //totalSupply       = safeSub(totalSupply, _value);
+        totalSupply       = sub(totalSupply, _value);
+        // TO DO replace this event by new one
+        //Transfer(_member, 0x0, _value);
         return true;
     }
 
     function transfer(address _to, uint _value) onlyUnlocked returns(bool) {
-        balances[msg.sender] = safeSub(balances[msg.sender], _value);
-        balances[_to]        = safeAdd(balances[_to], _value);
-        Transfer(msg.sender, _to, _value);
+        //balances[msg.sender] = safeSub(balances[msg.sender], _value);
+        balances[msg.sender] = sub(balances[msg.sender], _value);
+        //balances[_to]        = safeAdd(balances[_to], _value);
+        balances[_to]        = add(balances[_to], _value);
+        // TO DO replace this event by new one
+        //Transfer(msg.sender, _to, _value);
         return true;
     }
 
@@ -385,10 +397,14 @@ contract Gxpctoken is DSThing {
     function transferFrom(address _from, address _to, uint256 _value) onlyUnlocked returns(bool success) {
         if (balances[_from] < _value) revert(); // Check if the sender has enough
         if (_value > allowed[_from][msg.sender]) revert(); // Check allowance
-        balances[_from]            = safeSub(balances[_from], _value); // Subtract from the sender
-        balances[_to]              = safeAdd(balances[_to], _value); // Add the same to the recipient
-        allowed[_from][msg.sender] = safeSub(allowed[_from][msg.sender], _value);
-        Transfer(_from, _to, _value);
+        //balances[_from]            = safeSub(balances[_from], _value); // Subtract from the sender
+        balances[_from]            = sub(balances[_from], _value); // Subtract from the sender
+        //balances[_to]              = safeAdd(balances[_to], _value); // Add the same to the recipient
+        balances[_to]              = add(balances[_to], _value); // Add the same to the recipient
+        //allowed[_from][msg.sender] = safeSub(allowed[_from][msg.sender], _value);
+        allowed[_from][msg.sender] = sub(allowed[_from][msg.sender], _value);
+        // TO DO replace this event by new one
+        //Transfer(_from, _to, _value);
         return true;
     }
 
@@ -398,7 +414,8 @@ contract Gxpctoken is DSThing {
 
     function approve(address _spender, uint _value) returns(bool) {
         allowed[msg.sender][_spender] = _value;
-        Approval(msg.sender, _spender, _value);
+        // TO DO replace this event by new one
+        //Approval(msg.sender, _spender, _value);
         return true;
     }
 
