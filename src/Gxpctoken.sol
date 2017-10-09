@@ -178,7 +178,7 @@ contract Crowdsale is DSMath, DSStop, PullPayment {
 
         Backer storage backer = backers[_backer];
 
-         if ( backer.weiReceived  == 0)
+         if ( backer.weiReceived == 0)
              backersIndex.push(_backer);
 
         if (!gxpc.transfer(_backer, GXPCToSend)) revert(); // Transfer GXPC tokens
