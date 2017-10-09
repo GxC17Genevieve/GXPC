@@ -3,6 +3,7 @@ pragma solidity ^0.4.17;
 import "ds-auth/auth.sol";
 import "ds-math/math.sol";
 import "ds-note/note.sol";
+import "ds-stop/stop.sol";
 import "ds-token/token.sol";
 import "ds-vault/multivault.sol";
 
@@ -13,10 +14,10 @@ contract SystemRules {
     function serviceFee() returns(uint128);
 }
 
-contract Gxpctoken is DSAuth, DSMath, DSNote {
+contract Gxpctoken is DSAuth, DSMath, DSNote, DSStop {
 
-    ERC20 deposit;
-    DSToken appToken;
+    ERC20        deposit;
+    DSToken      appToken;
     DSMultiVault multiVault;
 
     SystemRules rules;
