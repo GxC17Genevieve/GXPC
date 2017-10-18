@@ -108,8 +108,7 @@ contract Crowdsale is DSMath, DSStop, PullPayment {
     // Crowdsale  {constructor}
     // @notice fired when contract is created. Initializes all constants.
     function Crowdsale() {
-        multisigETH   = 0x62739Ec09cdD8FAe2f7b976f8C11DbE338DF8750; 
-        team          = 0x62739Ec09cdD8FAe2f7b976f8C11DbE338DF8750;                    
+        receiveETHat   = 0xe0FE805c27173F0cC4D322d8DC3A3161A837c3aE; 
         GXPCSentToETH = 487000 * multiplier;               
         minInvestETH  = 100000000000000000 ; // 0.1 eth
         startBlock    = 0;                   // ICO start block
@@ -290,6 +289,22 @@ contract SystemRules {
 //contract Gxpctoken is DSAuth, DSMath, DSNote, DSStop {
 //contract Gxpctoken is DSMath, DSNote, DSStop {
 //contract Gxpctoken is DSThing, DSStop {
+
+/*********************************************************************
+ *
+ * This contract is based in DSToken functionality
+ * It achieves two seemingly opposing goals:
+ * a. Keep the "interface" address fixed - don't burden consumers with your update logic (e.g. registry lookups or following an update chain).
+ * b. Allow the behavior to be changed (with the ability to lock down, of course), and make it painless.
+ *
+ * This is done by splitting the token contract into 3 pieces:
+ * 1. a "Frontend"
+ * 2. a "Controller"
+ * 3. and a "Datastore"
+ * These are all DSAuth (DSAuthorized), they look up to a DSAuthority for access control.
+ * The frontend has erc20 function definitions as well as emit* event callback functions.
+ *
+ */
 
 contract Gxpctoken is DSThing {
     // from dapp example
