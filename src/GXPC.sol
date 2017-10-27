@@ -8,6 +8,7 @@ pragma solidity ^0.4.17;
      ****************************************************************/
 
 import "ds-auth/auth.sol";
+
 import "ds-math/math.sol";
 import "ds-note/note.sol";
 import "ds-stop/stop.sol";
@@ -72,7 +73,8 @@ contract Crowdsale is DSMath, DSStop, PullPayment {
         uint GXPCSent;    // amount of tokens  sent        
     }
 
-    Gxpctoken public gxpc;                     // DMINI contract reference   
+    GXPC      public gxpc;                     // DMINI contract reference   
+    address   receiveETHat;                    // beneficiary?
     address   public multisigETH;              // Multisig contract that will receive the ETH    
     address   public team;                     // Address at which the team GXPC will be sent   
     uint      public ETHReceived;              // Number of ETH received
@@ -123,8 +125,8 @@ contract Crowdsale is DSMath, DSStop, PullPayment {
     // @param _GXPCAddress {address} address of GXPC token contrac
     // @return res {bool}
     // TO DO replace onlyOwner by DSAuth
-    //function updateTokenAddress(Gxpctoken _GXPCAddress) public onlyOwner() returns(bool res) {
-    function updateTokenAddress(Gxpctoken _GXPCAddress) public returns(bool res) {
+    //function updateTokenAddress(GXPC _GXPCAddress) public onlyOwner() returns(bool res) {
+    function updateTokenAddress(GXPC _GXPCAddress) public returns(bool res) {
         gxpc = _GXPCAddress;  
         return true;    
     }
@@ -286,9 +288,9 @@ contract SystemRules {
 }
 
 
-//contract Gxpctoken is DSAuth, DSMath, DSNote, DSStop {
-//contract Gxpctoken is DSMath, DSNote, DSStop {
-//contract Gxpctoken is DSThing, DSStop {
+//contract GXPC is DSAuth, DSMath, DSNote, DSStop {
+//contract GXPC is DSMath, DSNote, DSStop {
+//contract GXPC is DSThing, DSStop {
 
 /*********************************************************************
  *
@@ -298,15 +300,23 @@ contract SystemRules {
  * b. Allow the behavior to be changed (with the ability to lock down, of course), and make it painless.
  *
  * This is done by splitting the token contract into 3 pieces:
+ *
  * 1. a "Frontend"
+ * has ERC20 function definitions as well as emit* event callback functions
+ *
  * 2. a "Controller"
+ * has implementations of the ERC20 functions extended to also accept the
+ * frontend's msg.sender as an argument (ERC20 semantics depend on msg.sender)
+ * and holds a single token vault which is able to hold any number of different ERC20 tokens
+ *
  * 3. and a "Datastore"
+ * holds all app state and has only dumb getters and setters and makes logic updates easier
+ *
  * These are all DSAuth (DSAuthorized), they look up to a DSAuthority for access control.
- * The frontend has erc20 function definitions as well as emit* event callback functions.
  *
  */
 
-contract Gxpctoken is DSThing {
+contract GXPC is DSThing {
     // from dapp example
 
     ERC20        deposit;
